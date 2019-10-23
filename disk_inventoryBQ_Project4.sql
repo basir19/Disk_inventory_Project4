@@ -389,14 +389,6 @@ WHERE		BorrowReturnDate IS NULL
 ORDER BY	DiskName;
 
 /**********************Project 5*******************************/
-
---porject 5
-USE disk_inventoryBQ;
---2.2 Create Insert, Update, and Delete stored procedures for the artist table. 
---Update procedure accepts a primary key value and the artist’s names for update. 
---Insert accepts all columns as input parameters except for identity fields. 
---Delete accepts a primary key value for delete.
--------------------------------------------------------------------------------------
 ---------------------------------store procedures for Artist table---------------------------
 --procedure to insert into artist table
 DROP PROC IF EXISTS sp_InsArtist;
@@ -517,7 +509,8 @@ GO
 EXEC sp_InsBorrower'charrr', 'Marssss', '205-555-7788'
 EXEC sp_InsBorrower 'char',null, null
 EXEC sp_InsBorrower 'charee', null, '100-111-2525'
-SELECT * FROM Borrower
+
+SELECT * FROM Borrower;
 
 --procedure to update the Borrower table
 DROP PROC IF EXISTS sp_updBorrower;
@@ -610,7 +603,8 @@ GO
 EXEC sp_InsDisk 'charrr', '01/01/2001', 2, 2, 2
 EXEC sp_InsDisk 'charrr', '01/01/2001', null, 12, 12
 EXEC sp_InsDisk 'charrr', null, 12, 12, 12
-SELECT * FROM CD_DVD
+
+SELECT * FROM CD_DVD;
 
 --procedure to update the Disk table
 DROP PROC IF EXISTS sp_updDisk;
