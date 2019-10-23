@@ -1,7 +1,7 @@
 /*
 		Name				Date				Project
 		Basir Qurbani		10/18/2019			SWDV 220 Project 4
-
+		Basir Qurbani		10/23/2019			SWDV 220 Project 5
 */
 ------------------------Code is used from project 2 starts here ----------------------------------------------
 USE master
@@ -387,4 +387,290 @@ JOIN		Borrower_Disk on CD_DVD.DiskID = Borrower_Disk.DiskID
 JOIN		Borrower on Borrower.BorrowerID = Borrower_Disk.BorrowerID
 WHERE		BorrowReturnDate IS NULL
 ORDER BY	DiskName;
+
+/**********************Project 5*******************************/
+
+--porject 5
+USE disk_inventoryBQ;
+--2.2 Create Insert, Update, and Delete stored procedures for the artist table. 
+--Update procedure accepts a primary key value and the artist’s names for update. 
+--Insert accepts all columns as input parameters except for identity fields. 
+--Delete accepts a primary key value for delete.
+-------------------------------------------------------------------------------------
+---------------------------------store procedures for Artist table---------------------------
+--procedure to insert into artist table
+DROP PROC IF EXISTS sp_InsArtist;
+GO
+
+CREATE PROC sp_InsArtist
+	@Fname			NVARCHAR(100),
+	@artistType_ID	INT,
+	@Lname			NVARCHAR(100) = null
+AS
+BEGIN TRY
+	INSERT	INTO [dbo].[Artist]
+				([ArtistFirstName]
+				,[ArtistLastName]
+				,[ArtistTypeID])
+			VALUES
+				(@Fname,
+				@Lname,
+				@artistType_ID)
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_InsArtist 'charrr', 1, 'Marssss'
+EXEC sp_InsArtist 'char', 1
+EXEC sp_InsArtist 'charee', null
+
+SELECT * FROM Artist;
+
+--procedure to update the artist table
+DROP PROC IF EXISTS sp_updArtist;
+GO
+
+CREATE PROC sp_updArtist
+	@artist_id		INT,
+	@fname			NVARCHAR(100),
+	@artistType_id	INT,
+	@lname			NVARCHAR(100) = null
+AS
+BEGIN TRY
+	UPDATE	[dbo].[Artist]
+		SET [ArtistFirstName] = @fname
+			,[ArtistLastName] = @lname
+			,[ArtistTypeID] = @artistType_id
+		WHERE ArtistID = @artist_id;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_updArtist 35, 'Bruno', 1, 'Mars'
+EXEC sp_updArtist 35, 'Cherrrrr', 1
+EXEC sp_updArtist 35, 'cherrrrrr', null
+
+--Procedur to delete from artist table
+DROP PROC IF EXISTS sp_delArtist;
+GO
+
+CREATE PROC sp_delArtist
+	@artist_id	INT
+AS
+BEGIN TRY
+	DELETE	FROM [dbo].[Artist]
+			WHERE ArtistID = @artist_id;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_delArtist 35
+EXEC sp_delArtist null
+
+---------------------------------store procedures for Borrower table---------------------------
+--procedure to insert into Borrower table
+DROP PROC IF EXISTS sp_InsBorrower;
+GO
+
+CREATE PROC sp_InsBorrower
+	@Fname NVARCHAR(100),
+	@Lname NVARCHAR(100),
+	@Phone NVARCHAR(100)
+AS
+BEGIN TRY
+	INSERT INTO [dbo].[Borrower]
+				(BorrowerFirstName
+				,BorrowerLastName
+				,BorrowerPhoneNum)
+			VALUES
+				(@Fname,
+				@Lname,
+				@Phone)
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_InsBorrower'charrr', 'Marssss', '205-555-7788'
+EXEC sp_InsBorrower 'char',null, null
+EXEC sp_InsBorrower 'charee', null, '100-111-2525'
+SELECT * FROM Borrower
+
+--procedure to update the Borrower table
+DROP PROC IF EXISTS sp_updBorrower;
+GO
+
+CREATE PROC sp_updBorrower
+	@BorowerID	INT,
+	@fname		NVARCHAR(100),
+	@lname		NVARCHAR(100),
+	@Phone		NVARCHAR(100)
+AS
+BEGIN TRY
+	UPDATE	[dbo].[Borrower]
+		SET	BorrowerFirstName = @fname,
+			BorrowerLastName = @lname,
+			BorrowerPhoneNum = @Phone
+	 WHERE	BorrowerID = @BorowerID;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_updBorrower 28, 'Bruno', 'Mars', '206-555-6666'
+EXEC sp_updBorrower 28, 'Cherrrrr', null, null
+EXEC sp_updBorrower 28, 'cherrrrrr', null, '111-222-3333'
+
+--Procedur to delete from Borrower table
+DROP PROC IF EXISTS sp_delBorrower;
+GO
+
+CREATE PROC sp_delBorrower
+	@borrowerID INT
+AS
+BEGIN TRY
+	DELETE FROM [dbo].[Borrower]
+		  WHERE BorrowerID = @borrowerID;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_delBorrower 23
+EXEC sp_delBorrower '1'
+
+---------------------------------store procedures for Disk table---------------------------
+--procedure to insert into Disk table
+DROP PROC IF EXISTS sp_InsDisk;
+GO
+
+CREATE PROC sp_InsDisk
+	@Dname			NVARCHAR(100),
+	@ReleaseDate	DATE,
+	@typeID			INT,
+	@statusID		INT,
+	@genreID		INT
+AS
+BEGIN TRY
+	INSERT INTO [dbo].[CD_DVD]
+				(DiskName
+				,DiskReleaseDate
+				,TypeID
+				,StatusID
+				,GenreID)
+			VALUES
+				(@Dname,
+				@ReleaseDate,
+				@typeID,
+				@statusID,
+				@genreID)
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_InsDisk 'charrr', '01/01/2001', 2, 2, 2
+EXEC sp_InsDisk 'charrr', '01/01/2001', null, 12, 12
+EXEC sp_InsDisk 'charrr', null, 12, 12, 12
+SELECT * FROM CD_DVD
+
+--procedure to update the Disk table
+DROP PROC IF EXISTS sp_updDisk;
+GO
+
+CREATE PROC sp_updDisk
+	@diskID			INT,
+	@Dname			NVARCHAR(100),
+	@ReleaseDate	DATE,
+	@typeID			INT,
+	@statusID		INT,
+	@genreID		INT
+AS
+BEGIN TRY
+	UPDATE	[dbo].[CD_DVD]
+	  SET	DiskName = @Dname,
+			DiskReleaseDate = @ReleaseDate,
+			TypeID = @typeID,
+			StatusID = @statusID,
+			GenreID = @genreID
+	 WHERE	DiskID = @diskID;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_updDisk 24, 'charrr', '01/01/2001', 1, 2, 3
+EXEC sp_updDisk 24, 'charrr', null, 2, 2, 2
+EXEC sp_updDisk 24, 'charrr', '01/01/2001', null, 2, 2
+
+--Procedur to delete from Disk table
+DROP PROC IF EXISTS sp_delDisk;
+GO
+
+CREATE PROC sp_delDisk
+	@diskID INT
+AS
+BEGIN TRY
+	DELETE FROM	  [dbo].[CD_DVD]
+			WHERE DiskID = @diskID;
+END TRY
+BEGIN CATCH
+	PRINT 'An error occurred. Raw was not inserted.';
+	PRINT 'Error number: ' +
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+	PRINT 'ERROR MESSAGE: ' + 
+		CONVERT(VARCHAR(200), ERROR_MESSAGE());
+END CATCH
+GO
+
+EXEC sp_delDisk 24
+EXEC sp_delDisk null
+
+
+
+
+
 
